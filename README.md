@@ -46,3 +46,71 @@ The stroke prediction model used in this application is built with XGBoost, a po
 ### Installation Steps
 
 1. Clone this repository:
+
+- git clone https://github.com/yourusername/strokerisk-insight.git 
+- cd strokerisk-insight
+
+2. Install required Python packages:
+
+
+3. Install wkhtmltopdf (required for PDF generation):
+- Windows: Download from https://wkhtmltopdf.org/downloads.html
+- Mac: `brew install wkhtmltopdf`
+- Linux: `sudo apt-get install wkhtmltopdf`
+
+4. Set up your Gemini API key:
+- Create a `.env` file in the root directory with:
+  ```
+  GEMINI_API_KEY=your_api_key_here
+  ```
+- Or set it directly in the environment:
+  ```
+  export GEMINI_API_KEY="your_api_key_here"
+  ```
+
+### Running the Application
+
+
+Access the application in your browser at `http://localhost:8501`.
+
+## Project Structure
+
+- to be updated.
+
+
+## Usage
+
+### For Individuals
+1. Select "Individual" user type from the sidebar
+2. Navigate to "Individual Assessment" 
+3. Enter your health information
+4. Receive a personalized risk assessment and recommendations
+5. Download your detailed risk report as a PDF
+
+### For Medical Experts
+1. Select "Medical Expert" user type from the sidebar
+2. Navigate to "Medical Expert" interface
+3. Upload a patient dataset (CSV format)
+4. View analysis results and performance metrics
+5. Generate a comprehensive report for clinical use
+
+## Chatbot Support
+- The integrated AI chatbot can answer questions about:
+  - Stroke risk factors and prevention
+  - Interpretation of assessment results
+  - General information about stroke warning signs
+  - Medical terminology and statistics
+
+## Security and Privacy
+This application processes health data locally in your browser. No data is stored on external servers, ensuring the privacy and security of sensitive medical information.
+
+## License
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Disclaimer
+This tool provides an assessment of stroke risk factors but is not a diagnostic device. The results should be discussed with a qualified healthcare provider. Always seek the advice of your physician or other qualified health provider with any questions regarding medical conditions.
+
+## Acknowledgements
+- Streamlit for the interactive web framework
+- XGBoost for the machine learning model implementation
+- Google's Gemini API for powering the chatbot functionality
