@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Stroke Risk Analysis Report</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        .header h1 {
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        .header p {
+            color: #7f8c8d;
+            font-size: 14px;
+            margin-top: 0;
+        }
+        .section {
+            margin-bottom: 30px;
+            page-break-inside: avoid;
+        }
+        .section h2 {
+            color: #3498db;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .chart-container {
+            margin: 20px 0;
+            text-align: center;
+        }
+        .chart-container img {
+            max-width: 100%;
+            height: auto;
+        }
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+        .metric-box {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 5px solid #3498db;
+        }
+        .metric-box h3 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 12px;
+            color: #7f8c8d;
+            border-top: 1px solid #eee;
+            padding-top: 10px;
+        }
+        .interpretation {
+            background-color: #e8f4f8;
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        .interpretation h4 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        .interpretation p {
+            margin-bottom: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Stroke Risk Analysis Report</h1>
+        <p>Report Type: {{ report_type }} | Generated: {{ timestamp }}</p>
+    </div>
+
+    <div class="section">
+        <h2>Dataset Overview</h2>
+        <table>
+            <tr>
+                <th>Total Patients</th>
+                <td>{{ dataset_size }}</td>
+            </tr>
+            {% if 'Stroke' in class_distribution %}
+            <tr>
+                <th>Stroke Cases</th>
+                <td>{{ class_distribution['Stroke'] }} ({{ "%.1f%%" | format(100 * class_distribution['Stroke'] / dataset_size) }})</td>
+            </tr>
+            <tr>
+                <th>Non-Stroke Cases</th>
+                <td>{{ class_distribution['No Stroke'] }} ({{ "%.1f%%" | format(100 * class_distribution['No Stroke'] / dataset_size) }})</td>
+            </tr>
+            {% endif %}
+        </table>
+    </div>
+
+    <div class="section">
+        <h2>Key Risk Factors</h2>
+        <div class="chart-container">
+            <img src="{{ charts.feature_importance }}" alt="Feature Importance Chart">
+        </div>
+        
+        <div class="interpretation">
+            <h4>Interpretation:</h4>
+            <p>The chart above shows the relative importance of different factors in predicting stroke risk. Longer bars indicate factors that have greater influence on the model's predictions.</p>
+        </div>
+        
+        <h3>Risk Factor Descriptions</h3>
+        <table>
+            {% for feature, description in feature_descriptions.items() %}
+            <tr>
+                <th>{{ feature|capitalize }}</th>
+                <td>{{ description }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <div class="section">
+        <h2>Descriptive Statistics</h2>
+        
+        {% for feature in ['age', 'avg_glucose_level', 'bmi'] %}
+        <h3>{{ feature|capitalize }}</h3>
+        <table>
+            <tr>
+                <th>Mean</th>
+                <td>{{ descriptive_stats[feature]['mean'] }}</td>
+                <th>Median</th>
+                <td>{{ descriptive_stats[feature]['50%'] }}</td>
+            </tr>
+            <tr>
+                <th>Minimum</th>
+                <td>{{ descriptive_stats[feature]['min'] }}</td>
+                <th>Maximum</th>
+                <td>{{ descriptive_stats[feature]['max'] }}</td>
+            </tr>
+            <tr>
+                <th>25th Percentile</th>
+                <td>{{ descriptive_stats[feature]['25%'] }}</td>
+                <th>75th Percentile</th>
+                <td>{{ descriptive_stats[feature]['75%'] }}</td>
+            </tr>
+        </table>
+        {% endfor %}
+    </div>
+
+    {% if classification_metrics %}
+    <div class="section">
+        <h2>Model Performance</h2>
+        
+        <div class="metrics-grid">
+            <div class="metric-box">
+                <h3>Accuracy</h3>
+                <p style="font-size: 24px; font-weight: bold;">{{ "%.3f" | format(classification_metrics['accuracy']) }}</p>
+                <p>Overall correctness in classifying both stroke and non-stroke cases.</p>
+            </div>
+            
+            <div class="metric-box">
+                <h3>Area Under ROC Curve (AUC)</h3>
+                <p style="font-size: 24px; font-weight: bold;">{{ "%.3f" | format(roc_auc) }}</p>
+                <p>Measures the model's ability to discriminate between stroke and non-stroke cases.</p>
+            </div>
+            
+            <div class="metric-box">
+                <h3>Precision</h3>
+                <p style="font-size: 24px; font-weight: bold;">{{ "%.3f" | format(classification_metrics['1']['precision']) }}</p>
+                <p>Of all patients predicted to have stroke, the percentage that actually had stroke.</p>
+            </div>
+            
+            <div class="metric-box">
+                <h3>Recall (Sensitivity)</h3>
+                <p style="font-size: 24px; font-weight: bold;">{{ "%.3f" | format(classification_metrics['1']['recall']) }}</p>
+                <p>Of all patients who actually had stroke, the percentage correctly identified.</p>
+            </div>
+        </div>
+        
+        <h3>Performance Visualizations</h3>
+        
+        <div class="chart-container">
+            {% if charts.confusion_matrix %}
+            <h4>Confusion Matrix</h4>
+            <img src="{{ charts.confusion_matrix }}" alt="Confusion Matrix">
+            {% endif %}
+        </div>
+        
+        <div class="chart-container">
+            {% if charts.roc_curve %}
+            <h4>ROC Curve</h4>
+            <img src="{{ charts.roc_curve }}" alt="ROC Curve">
+            {% endif %}
+        </div>
+        
+        <div class="chart-container">
+            {% if charts.calibration_plot %}
+            <h4>Calibration Plot</h4>
+            <img src="{{ charts.calibration_plot }}" alt="Calibration Plot">
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="section">
+        <h2>Clinical Implications</h2>
+        
+        <h3>Key Findings</h3>
+        <ul>
+            <li>The model identifies age, average glucose level, and BMI as particularly important risk factors, which aligns with established clinical knowledge.</li>
+            <li>These results can help prioritize interventions focused on modifiable risk factors such as glucose management, weight reduction, and blood pressure control.</li>
+            <li>The model allows for risk stratification, helping to identify high-risk patients who may benefit from more intensive preventive measures.</li>
+        </ul>
+        
+        <h3>Recommendations for Clinical Practice</h3>
+        <ul>
+            <li>Consider using this model as a screening tool to identify patients who may benefit from more comprehensive stroke risk evaluation.</li>
+            <li>For patients identified as high risk, consider more frequent monitoring of modifiable risk factors.</li>
+            <li>Use the model's predictions to complement, not replace, clinical judgment and established risk assessment tools.</li>
+            <li>Consider educational interventions for patients with modifiable risk factors identified as important by the model.</li>
+        </ul>
+    </div>
+
+    <div class="footer">
+        <p>This report is generated for professional use by qualified healthcare providers. The model provides risk stratification based on available data but has inherent limitations and should supplement, not replace, clinical judgment.</p>
+        <p>© {{ timestamp.split('-')[0] }} StrokeRisk Insight. All rights reserved.</p>
+    </div>
+</body>
+</html>

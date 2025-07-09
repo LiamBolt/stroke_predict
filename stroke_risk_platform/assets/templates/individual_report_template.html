@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Stroke Risk Assessment Report</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        .header h1 {
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        .header p {
+            color: #7f8c8d;
+            font-size: 14px;
+            margin-top: 0;
+        }
+        .section {
+            margin-bottom: 30px;
+        }
+        .section h2 {
+            color: #3498db;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+        .risk-indicator {
+            padding: 15px;
+            border-radius: 8px;
+            margin: 15px 0;
+            color: white;
+        }
+        .patient-data {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        .patient-data th, .patient-data td {
+            padding: 8px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        .patient-data th {
+            background-color: #f2f2f2;
+        }
+        .risk-factor {
+            margin-bottom: 20px;
+        }
+        .risk-factor h3 {
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        .risk-factor p {
+            margin-top: 0;
+        }
+        .recommendations {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 5px solid #3498db;
+        }
+        .recommendations h3 {
+            margin-top: 0;
+        }
+        .recommendations ul {
+            margin-bottom: 0;
+        }
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 12px;
+            color: #7f8c8d;
+            border-top: 1px solid #eee;
+            padding-top: 10px;
+        }
+        .chart-container {
+            margin: 20px 0;
+            text-align: center;
+        }
+        .chart-container img {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Stroke Risk Assessment Report</h1>
+        <p>Report Type: {{ report_type }} | Generated: {{ timestamp }}</p>
+    </div>
+
+    <div class="section">
+        <h2>Risk Assessment Result</h2>
+        <!-- <div class="risk-indicator" style="background-color: {{ risk_color or '#3498db' }};"> -->
+        <div class="risk-indicator" style="background-color: {{ risk_color | default('#3498db') }};">
+            <h3>Risk Category: {{ risk_category }}</h3>
+            <p>{{ risk_description }}</p>
+            <p>Probability: {{ "%.2f%%" | format(prediction*100) }}</p>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Patient Information</h2>
+        <table class="patient-data">
+            <tr>
+                <th>Age</th>
+                <td>{{ patient_data.age }}</td>
+                <th>Gender</th>
+                <td>{{ patient_data.gender }}</td>
+            </tr>
+            <tr>
+                <th>BMI</th>
+                <td>{{ "%.1f" | format(patient_data.bmi) }}</td>
+                <th>Average Glucose</th>
+                <td>{{ "%.1f" | format(patient_data.avg_glucose_level) }} mg/dL</td>
+            </tr>
+            <tr>
+                <th>Hypertension</th>
+                <td>{{ "Yes" if patient_data.hypertension == 1 else "No" }}</td>
+                <th>Heart Disease</th>
+                <td>{{ "Yes" if patient_data.heart_disease == 1 else "No" }}</td>
+            </tr>
+            <tr>
+                <th>Smoking Status</th>
+                <td>{{ patient_data.smoking_status }}</td>
+                <th>Residence Type</th>
+                <td>{{ patient_data.Residence_type }}</td>
+            </tr>
+            <tr>
+                <th>Work Type</th>
+                <td>{{ patient_data.work_type }}</td>
+                <th>Ever Married</th>
+                <td>{{ patient_data.ever_married }}</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="section">
+        <h2>Key Risk Factors</h2>
+        <div class="chart-container">
+            <img src="{{ charts.feature_importance }}" alt="Feature Importance Chart">
+        </div>
+        
+        {% for feature, description in feature_descriptions.items() %}
+            {% if feature in ['age', 'avg_glucose_level', 'bmi', 'hypertension', 'heart_disease', 'smoking_status'] %}
+                <div class="risk-factor">
+                    <h3>{{ feature|capitalize }}</h3>
+                    <p>{{ description }}</p>
+                    {% if feature == 'age' %}
+                        <p><strong>Your value:</strong> {{ patient_data.age }} years</p>
+                        {% if patient_data.age > 65 %}
+                            <p><em>Note: Age above 65 is associated with significantly higher stroke risk.</em></p>
+                        {% endif %}
+                    {% elif feature == 'avg_glucose_level' %}
+                        <p><strong>Your value:</strong> {{ "%.1f" | format(patient_data.avg_glucose_level) }} mg/dL</p>
+                        {% if patient_data.avg_glucose_level > 140 %}
+                            <p><em>Note: Glucose levels above 140 mg/dL may indicate prediabetes or diabetes, increasing stroke risk.</em></p>
+                        {% endif %}
+                    {% elif feature == 'bmi' %}
+                        <p><strong>Your value:</strong> {{ "%.1f" | format(patient_data.bmi) }}</p>
+                        {% if patient_data.bmi > 25 %}
+                            <p><em>Note: BMI above 25 is considered overweight, which can increase stroke risk.</em></p>
+                        {% endif %}
+                    {% elif feature == 'hypertension' %}
+                        <p><strong>Your status:</strong> {{ "Yes" if patient_data.hypertension == 1 else "No" }}</p>
+                        {% if patient_data.hypertension == 1 %}
+                            <p><em>Note: Hypertension significantly increases stroke risk and requires management.</em></p>
+                        {% endif %}
+                    {% elif feature == 'heart_disease' %}
+                        <p><strong>Your status:</strong> {{ "Yes" if patient_data.heart_disease == 1 else "No" }}</p>
+                        {% if patient_data.heart_disease == 1 %}
+                            <p><em>Note: Heart disease is a major risk factor for stroke.</em></p>
+                        {% endif %}
+                    {% elif feature == 'smoking_status' %}
+                        <p><strong>Your status:</strong> {{ patient_data.smoking_status }}</p>
+                        {% if patient_data.smoking_status == 'smokes' %}
+                            <p><em>Note: Active smoking significantly increases stroke risk.</em></p>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+
+    <div class="section">
+        <h2>Recommendations</h2>
+        <div class="recommendations">
+            <h3>Based on your risk profile, consider the following:</h3>
+            <ul>
+                {% if patient_data.age > 65 %}
+                    <li>Schedule regular check-ups with your healthcare provider, as age is a significant risk factor.</li>
+                {% endif %}
+                
+                {% if patient_data.hypertension == 1 %}
+                    <li>Continue management of your hypertension through medication, diet, and regular monitoring.</li>
+                {% endif %}
+                
+                {% if patient_data.heart_disease == 1 %}
+                    <li>Follow your cardiologist's advice and treatment plan for your heart condition.</li>
+                {% endif %}
+                
+                {% if patient_data.bmi > 25 %}
+                    <li>Consider a weight management program to achieve a healthier BMI.</li>
+                {% endif %}
+                
+                {% if patient_data.avg_glucose_level > 140 %}
+                    <li>Discuss your glucose levels with a healthcare provider; consider diabetes screening and blood sugar management.</li>
+                {% endif %}
+                
+                {% if patient_data.smoking_status == 'smokes' %}
+                    <li>Quitting smoking is one of the most effective ways to reduce stroke risk.</li>
+                {% endif %}
+                
+                <li>Maintain regular physical activity (at least 150 minutes of moderate activity per week).</li>
+                <li>Adopt a heart-healthy diet rich in fruits, vegetables, and whole grains.</li>
+                <li>Limit alcohol consumption.</li>
+                <li>Know the warning signs of stroke (F.A.S.T.): Face drooping, Arm weakness, Speech difficulty, Time to call emergency services.</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>This report is for informational purposes only and does not constitute medical advice. Please consult with a healthcare professional regarding your risk factors and appropriate preventive measures.</p>
+        <p>© {{ timestamp.split('-')[0] }} StrokeRisk Insight. All rights reserved.</p>
+    </div>
+</body>
+</html>
