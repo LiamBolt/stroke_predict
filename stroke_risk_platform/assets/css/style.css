@@ -1,0 +1,173 @@
+/* Main styling for StrokeRisk Insight */
+
+/* Custom font for Streamlit */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+
+/* Main containers */
+.main .block-container {
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+}
+
+/* Headers */
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500;
+    color: #2c3e50;
+}
+
+h1 {
+    font-weight: 700;
+    color: #3498db;
+}
+
+/* Sidebar */
+.css-1d391kg {
+    background-color: #f8f9fa;
+}
+
+/* Custom cards */
+.info-card {
+    background-color: #ffffff;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.25rem 0.5rem rgba(0, 0, 0, 0.05);
+    margin-bottom: 1rem;
+}
+
+.info-card-title {
+    font-size: 1.25rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+/* Risk category styling */
+.risk-low {
+    background-color: #2ECC71;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+}
+
+.risk-moderate {
+    background-color: #F39C12;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+}
+
+.risk-elevated {
+    background-color: #E67E22;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+}
+
+.risk-high {
+    background-color: #E74C3C;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+}
+
+.risk-very-high {
+    background-color: #C0392B;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+}
+
+/* Form styling */
+.stForm {
+    background-color: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 0.5rem;
+}
+
+/* Button styling */
+.stButton > button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 0.25rem;
+    padding: 0.5rem 1.5rem;
+    font-weight: 500;
+}
+
+.stButton > button:hover {
+    background-color: #2980b9;
+}
+
+/* Download button */
+.download-btn {
+    display: inline-block;
+    background-color: #2ecc71;
+    color: white;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+    font-weight: 500;
+    margin-top: 1rem;
+}
+
+.download-btn:hover {
+    background-color: #27ae60;
+}
+
+/* Medical disclaimer */
+.disclaimer {
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 1rem;
+    border-radius: 0.25rem;
+    margin-top: 2rem;
+    font-size: 0.875rem;
+}
+
+/* Chat interface */
+.chat-message {
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin-bottom: 0.5rem;
+    max-width: 80%;
+}
+
+.chat-message-user {
+    background-color: #e3f2fd;
+    margin-left: auto;
+}
+
+.chat-message-assistant {
+    background-color: #f1f3f4;
+    margin-right: auto;
+}
+
+/* Table formatting */
+.dataframe {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.dataframe th {
+    background-color: #f8f9fa;
+    font-weight: 500;
+}
+
+/* Custom metrics */
+.custom-metric {
+    background-color: #f8f9fa;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    text-align: center;
+}
+
+.custom-metric-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #3498db;
+}
+
+.custom-metric-label {
+    font-size: 0.875rem;
+    color: #7f8c8d;
+}
